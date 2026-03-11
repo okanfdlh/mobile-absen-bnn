@@ -1,0 +1,559 @@
+Anda adalah Senior Android Software Engineer dan Mobile Solution Architect.
+Tugas Anda adalah merancang dan mengembangkan aplikasi mobile native Android untuk sistem absensi apel pagi per bidang, dengan spesifikasi offline-first, menggunakan:
+
+Kotlin
+
+SQLite melalui Room Database
+
+Arsitektur MVVM
+
+Clean, maintainable, production-ready code
+
+Fokus pada aplikasi offline tanpa ketergantungan internet
+
+UI Android native, modern, sederhana, dan mudah digunakan admin
+
+Latar belakang aplikasi
+
+Aplikasi ini digunakan untuk menggantikan absensi manual berbasis kertas.
+Absensi bukan per pegawai, tetapi berupa rekap jumlah absensi per bidang/divisi per hari.
+
+Setiap hari, admin akan menginput data absensi untuk tiap bidang, berupa:
+
+jumlah pegawai
+
+jumlah hadir
+
+jumlah kurang
+
+rincian keterangan kurang:
+
+dinas
+
+terlambat
+
+sakit
+
+cuti
+
+izin
+
+off dinas
+
+lain-lain
+
+Aplikasi harus dapat:
+
+input absensi harian
+
+menampilkan rekap harian
+
+menampilkan rekap mingguan
+
+menampilkan rekap bulanan
+
+menampilkan riwayat absensi
+
+berjalan penuh secara offline
+
+menyimpan data lokal dengan SQLite
+
+Aktor aplikasi
+Admin
+
+Admin dapat:
+
+login
+
+input absensi harian
+
+edit absensi harian
+
+lihat rekap harian
+
+lihat rekap mingguan
+
+lihat rekap bulanan
+
+lihat riwayat absensi
+
+kelola master bidang
+
+Viewer (opsional)
+
+Viewer hanya dapat melihat rekap dan riwayat, tanpa bisa edit.
+
+Alur aplikasi
+1. Login
+
+User login secara offline menggunakan akun lokal
+
+Data user disimpan di SQLite
+
+Session dapat disimpan lokal menggunakan DataStore atau SharedPreferences
+
+2. Dashboard
+
+Setelah login, tampilkan menu:
+
+Absen Hari Ini
+
+Rekap Harian
+
+Rekap Mingguan
+
+Rekap Bulanan
+
+Riwayat
+
+Master Bidang
+
+Logout
+
+3. Absen Hari Ini
+
+Flow:
+
+admin memilih bidang
+
+sistem menampilkan tanggal hari ini
+
+admin input:
+
+jumlah
+
+hadir
+
+keterangan kurang:
+
+dinas
+
+terlambat
+
+sakit
+
+cuti
+
+izin
+
+off dinas
+
+lain-lain
+
+opsional catatan lain-lain
+
+sistem menghitung otomatis:
+
+kurang = jumlah - hadir
+
+sistem validasi:
+
+hadir tidak boleh lebih besar dari jumlah
+
+total seluruh keterangan kurang harus sama dengan nilai kurang
+
+jika data untuk bidang dan tanggal tersebut sudah ada, maka form menjadi mode edit
+
+simpan data ke SQLite
+
+4. Rekap Harian
+
+pilih tanggal
+
+tampilkan rekap per bidang
+
+tampilkan total seluruh bidang:
+
+total pegawai
+
+total hadir
+
+total kurang
+
+total per kategori keterangan
+
+persentase hadir
+
+5. Rekap Mingguan
+
+pilih periode minggu
+
+tampilkan rekap agregat per bidang untuk minggu tersebut
+
+gunakan weekKey format ISO, misalnya 2026-W09
+
+6. Rekap Bulanan
+
+pilih bulan
+
+tampilkan rekap agregat per bidang untuk bulan tersebut
+
+gunakan monthKey format YYYY-MM, misalnya 2026-02
+
+7. Riwayat
+
+tampilkan daftar minggu yang pernah memiliki data
+
+tampilkan daftar bulan yang pernah memiliki data
+
+user dapat memilih salah satu untuk melihat detail rekap
+
+8. Master Bidang
+
+tambah bidang
+
+edit bidang
+
+aktif/nonaktif bidang
+
+Ketentuan bisnis
+
+Absensi disimpan per bidang per tanggal
+
+Tidak ada tabel employee
+
+Rumus:
+
+kurang = jumlah - hadir
+
+Validasi:
+
+hadir <= jumlah
+
+semua nilai numerik tidak boleh negatif
+
+dinas + terlambat + sakit + cuti + izin + off_dinas + lain_lain == kurang
+
+Harus ada 1 data unik per bidang per tanggal
+
+Aplikasi bersifat offline-first
+
+Rekap mingguan dan bulanan dihitung dari data harian di SQLite, bukan wajib disimpan dalam tabel terpisah
+
+Sistem harus mudah dikembangkan ke depan jika suatu saat ingin sinkronisasi ke server/Firebase
+
+Desain database SQLite yang wajib digunakan
+Tabel users
+
+Gunakan untuk login lokal.
+Kolom minimal:
+
+id
+
+username
+
+password_hash
+
+full_name
+
+role
+
+is_active
+
+created_at
+
+updated_at
+
+Tabel divisions
+
+Kolom minimal:
+
+id
+
+code
+
+name
+
+is_active
+
+created_at
+
+updated_at
+
+Tabel attendance_daily
+
+Kolom minimal:
+
+id
+
+division_id
+
+attendance_date (format YYYY-MM-DD)
+
+year
+
+month
+
+month_key (YYYY-MM)
+
+week_key (YYYY-Www)
+
+jumlah
+
+hadir
+
+kurang
+
+dinas
+
+terlambat
+
+sakit
+
+cuti
+
+izin
+
+off_dinas
+
+lain_lain
+
+lain_lain_note
+
+created_by
+
+created_at
+
+updated_at
+
+Tambahkan unique index:
+
+(division_id, attendance_date)
+
+Gunakan foreign key ke:
+
+divisions(id)
+
+users(id)
+
+Arsitektur teknis yang diharapkan
+
+Gunakan:
+
+Kotlin
+
+Room
+
+MVVM
+
+Repository Pattern
+
+ViewModel
+
+StateFlow atau LiveData
+
+modular, rapi, dan scalable
+
+Struktur package yang diharapkan:
+
+data/local/entity
+
+data/local/dao
+
+data/local/database
+
+data/repository
+
+domain/model
+
+domain/usecase
+
+ui/login
+
+ui/dashboard
+
+ui/attendance
+
+ui/report_daily
+
+ui/report_weekly
+
+ui/report_monthly
+
+ui/history
+
+ui/division
+
+Gunakan best practice:
+
+separation of concerns
+
+dependency injection jika perlu
+
+readable code
+
+reusable components
+
+validasi terpusat
+
+error handling yang baik
+
+Query/report yang harus tersedia
+
+Aplikasi harus mendukung query berikut:
+
+Rekap harian total
+
+total pegawai
+
+total hadir
+
+total kurang
+
+total masing-masing kategori keterangan
+
+persentase hadir
+
+Rekap harian per bidang
+
+tampilkan semua bidang pada tanggal tertentu
+
+Rekap mingguan per bidang
+
+agregasi berdasarkan week_key
+
+Rekap bulanan per bidang
+
+agregasi berdasarkan month_key
+
+Riwayat minggu
+
+daftar distinct week_key
+
+Riwayat bulan
+
+daftar distinct month_key
+
+Ketentuan UI/UX
+
+Buat UI yang:
+
+simple
+
+form-friendly
+
+cocok untuk admin kantor
+
+mudah dibaca
+
+minim langkah input
+
+ada validasi real-time
+
+ada notifikasi sukses/gagal
+
+bisa edit data yang sudah tersimpan
+
+tampilkan nilai kurang otomatis
+
+tampilkan indikator jika total keterangan tidak sesuai
+
+Halaman minimal:
+
+LoginScreen
+
+DashboardScreen
+
+AttendanceTodayScreen
+
+DailyReportScreen
+
+WeeklyReportScreen
+
+MonthlyReportScreen
+
+HistoryScreen
+
+DivisionManagementScreen
+
+Output yang saya inginkan dari Anda
+
+Saya ingin Anda menghasilkan implementasi lengkap dan terstruktur, meliputi:
+
+Penjelasan arsitektur aplikasi
+
+ERD atau penjelasan relasi tabel
+
+Room Entities
+
+DAO lengkap
+
+Room Database setup
+
+Repository
+
+Use case / business logic
+
+ViewModel
+
+UI screens
+
+Navigasi antar screen
+
+Validasi form absensi
+
+Fungsi utilitas untuk weekKey dan monthKey
+
+Contoh seed data untuk bidang
+
+Contoh akun admin default
+
+Query SQL/Room untuk rekap harian, mingguan, bulanan
+
+Struktur folder project
+
+Kode yang clean, compilable, dan siap dikembangkan
+
+Ketentuan implementasi tambahan
+
+Jangan gunakan Firebase
+
+Jangan gunakan backend online
+
+Semua data harus tersimpan lokal
+
+Password login lokal jangan disimpan plain text
+
+Gunakan hash password
+
+Gunakan Room, bukan raw SQLite kecuali benar-benar diperlukan
+
+Kode harus siap untuk Android Studio
+
+Jelaskan dependency Gradle yang diperlukan
+
+Jika memilih Jetpack Compose, konsisten gunakan Compose
+
+Jika memilih XML + ViewBinding, konsisten gunakan itu
+
+Jangan campur dua pendekatan UI
+
+Instruksi gaya kerja
+
+Kerjakan sebagai engineer senior:
+
+pikirkan edge case
+
+pikirkan maintainability
+
+pikirkan validasi data
+
+pikirkan performa query SQLite
+
+pikirkan kemungkinan fitur export atau sync di masa depan
+
+hindari overengineering
+
+berikan alasan desain saat perlu
+
+hasilkan kode yang jelas, rapi, dan siap dipakai
+
+Mulailah dengan:
+
+merangkum kebutuhan,
+
+menjelaskan arsitektur yang dipilih,
+
+menuliskan skema database,
+
+lalu lanjutkan ke implementasi kode inti secara bertahap.
