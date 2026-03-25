@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
@@ -204,6 +205,19 @@ fun DashboardScreen(
                         iconColor = MaterialTheme.colorScheme.primary,
                     ) { onNavigate(Routes.Division) }
                 }
+
+                Text(
+                    "Informasi",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                MenuCard(
+                    title = "Tentang Aplikasi",
+                    subtitle = "Info developer & aplikasi",
+                    icon = Icons.Default.Info,
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    iconColor = MaterialTheme.colorScheme.tertiary,
+                ) { onNavigate(Routes.Author) }
 
                 Spacer(modifier = Modifier.height(4.dp))
 

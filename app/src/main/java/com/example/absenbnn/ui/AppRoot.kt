@@ -23,6 +23,7 @@ import com.example.absenbnn.ui.report.DailyReportScreen
 import com.example.absenbnn.ui.report.MonthlyReportScreen
 import com.example.absenbnn.ui.report.WeeklyReportScreen
 import com.example.absenbnn.ui.theme.AbsenBnnTheme
+import com.example.absenbnn.ui.author.AuthorScreen
 import com.example.absenbnn.ui.today.AttendanceTodayScreen
 import kotlinx.coroutines.flow.first
 
@@ -36,6 +37,7 @@ object Routes {
     const val ReportMonthly = "report_monthly"
     const val History = "history"
     const val Division = "division"
+    const val Author = "author"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,6 +107,9 @@ fun AppRoot() {
             }
             composable(Routes.Division) {
                 DivisionManagementScreen(onBack = { navController.popBackStack() })
+            }
+            composable(Routes.Author) {
+                AuthorScreen(onBack = { navController.popBackStack() })
             }
         }
     }
