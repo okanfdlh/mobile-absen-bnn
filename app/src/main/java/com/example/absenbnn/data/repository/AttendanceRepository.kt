@@ -16,6 +16,10 @@ class AttendanceRepository(
         return attendanceDao.upsert(entity)
     }
 
+    suspend fun deleteById(id: Long) {
+        attendanceDao.deleteById(id)
+    }
+
     private fun AttendanceDailyEntity.toDomain(): AttendanceDaily {
         return AttendanceDaily(
             id = id,

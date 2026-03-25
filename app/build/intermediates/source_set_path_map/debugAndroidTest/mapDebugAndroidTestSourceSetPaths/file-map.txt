@@ -1,0 +1,4 @@
+com.example.absenbnn.test.app-androidTest-0 /Users/mac/Documents/trae_projects/absenBnn/app/build/generated/res/resValues/androidTest/debug
+com.example.absenbnn.test.app-mergeDebugAndroidTestResources-1 /Users/mac/Documents/trae_projects/absenBnn/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.absenbnn.test.app-mergeDebugAndroidTestResources-2 /Users/mac/Documents/trae_projects/absenBnn/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.absenbnn.test.app-debugAndroidTest-3 /Users/mac/Documents/trae_projects/absenBnn/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

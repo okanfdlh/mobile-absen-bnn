@@ -18,4 +18,7 @@ interface AttendanceDao {
 
     @Upsert
     suspend fun upsert(entity: AttendanceDailyEntity): Long
+
+    @Query("DELETE FROM attendance_daily WHERE id = :id")
+    suspend fun deleteById(id: Long)
 }

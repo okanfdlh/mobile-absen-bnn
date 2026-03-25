@@ -7,6 +7,7 @@ import com.example.absenbnn.domain.model.AttendanceDaily
 import com.example.absenbnn.domain.model.AttendanceDraft
 import com.example.absenbnn.domain.model.Division
 import com.example.absenbnn.domain.model.Session
+import com.example.absenbnn.domain.usecase.DeleteAttendanceDailyUseCase
 import com.example.absenbnn.domain.usecase.GetAttendanceDailyUseCase
 import com.example.absenbnn.domain.usecase.ObserveDivisionsUseCase
 import com.example.absenbnn.domain.usecase.ObserveSessionUseCase
@@ -36,6 +37,7 @@ data class AttendanceTodayUiState(
     val lainLainNote: String = "",
     val loadedExisting: AttendanceDaily? = null,
     val isSaving: Boolean = false,
+    val isDeleting: Boolean = false,
     val message: String? = null,
 ) {
     fun jumlahInt(): Int = jumlahText.toIntOrNull() ?: 0
@@ -61,6 +63,7 @@ class AttendanceTodayViewModel(
     observeDivisions: ObserveDivisionsUseCase,
     private val getAttendanceDailyUseCase: GetAttendanceDailyUseCase,
     private val upsertAttendanceDailyUseCase: UpsertAttendanceDailyUseCase,
+    private val deleteAttendanceDailyUseCase: DeleteAttendanceDailyUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(AttendanceTodayUiState())
     val state: StateFlow<AttendanceTodayUiState> = _state.asStateFlow()
@@ -97,49 +100,16 @@ class AttendanceTodayViewModel(
         reloadExisting()
     }
 
-    fun setJumlah(value: String) {
-        _state.value = _state.value.copy(jumlahText = value, message = null)
-    }
-
-    fun setHadir(value: String) {
-        _state.value = _state.value.copy(hadirText = value, message = null)
-    }
-
-    fun setDinas(value: String) {
-        _state.value = _state.value.copy(dinasText = value, message = null)
-    }
-
-    fun setTerlambat(value: String) {
-        _state.value = _state.value.copy(terlambatText = value, message = null)
-    }
-
-    fun setSakit(value: String) {
-        _state.value = _state.value.copy(sakitText = value, message = null)
-    }
-
-    fun setCuti(value: String) {
-        _state.value = _state.value.copy(cutiText = value, message = null)
-    }
-
-    fun setIzin(value: String) {
-        _state.value = _state.value.copy(izinText = value, message = null)
-    }
-
-    fun setOffDinas(value: String) {
-        _state.value = _state.value.copy(offDinasText = value, message = null)
-    }
-
-    fun setLainLain(value: String) {
-        _state.value = _state.value.copy(lainLainText = value, message = null)
-    }
-
-    fun setLainLainNote(value: String) {
-        _state.value = _state.value.copy(lainLainNote = value, message = null)
-    }
-
-    fun clearMessage() {
-        _state.value = _state.value.copy(message = null)
-    }
+    fun setJumlah(value: String) { _state.value = _state.value.copy(jumlahText = value, message = null) }
+    fun setHadir(value: String) { _state.value = _state.value.copy(hadirText = value, message = null) }
+    fun setDinas(value: String) { _state.value = _state.value.copy(dinasText = value, message = null) }
+    fun setTerlambat(value: String) { _state.value = _state.value.copy(terlambatText = value, message = null) }
+    fun setSakit(value: String) { _state.value = _state.value.copy(sakitText = value, message = null) }
+    fun setCuti(value: String) { _state.value = _state.value.copy(cutiText = value, message = null) }
+    fun setIzin(value: String) { _state.value = _state.value.copy(izinText = value, message = null) }
+    fun setOffDinas(value: String) { _state.value = _state.value.copy(offDinasText = value, message = null) }
+    fun setLainLain(value: String) { _state.value = _state.value.copy(lainLainText = value, message = null) }
+    fun setLainLainNote(value: String) { _state.value = _state.value.copy(lainLainNote = value, message = null) }
 
     fun save() {
         val current = _state.value
@@ -174,6 +144,37 @@ class AttendanceTodayViewModel(
                 }
                 .onFailure { e ->
                     _state.value = _state.value.copy(isSaving = false, message = e.message ?: "Gagal menyimpan")
+                }
+        }
+    }
+
+    fun delete() {
+        val current = _state.value
+        val id = current.loadedExisting?.id ?: return
+        if (current.isDeleting) return
+
+        _state.value = current.copy(isDeleting = true, message = null)
+        viewModelScope.launch {
+            deleteAttendanceDailyUseCase.execute(id)
+                .onSuccess {
+                    _state.value = _state.value.copy(
+                        isDeleting = false,
+                        message = "Data absen dihapus",
+                        loadedExisting = null,
+                        jumlahText = "",
+                        hadirText = "",
+                        dinasText = "0",
+                        terlambatText = "0",
+                        sakitText = "0",
+                        cutiText = "0",
+                        izinText = "0",
+                        offDinasText = "0",
+                        lainLainText = "0",
+                        lainLainNote = "",
+                    )
+                }
+                .onFailure { e ->
+                    _state.value = _state.value.copy(isDeleting = false, message = e.message ?: "Gagal menghapus")
                 }
         }
     }
@@ -216,4 +217,3 @@ class AttendanceTodayViewModel(
         }
     }
 }
-

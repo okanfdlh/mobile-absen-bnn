@@ -90,7 +90,9 @@ Saat database pertama kali dibuat, aplikasi melakukan seed:
 ### Prasyarat
 
 - Android Studio (disarankan versi terbaru stable)
-- JDK 17 (Android Studio biasanya sudah menyertakan/men-setting JDK)
+- Java:
+  - Untuk build Android (AGP/Gradle) gunakan **JDK 17** sebagai **Gradle JDK** (disarankan pakai Embedded JDK dari Android Studio).
+  - Jika Java sistem kamu sudah **OpenJDK 25** (seperti `java --version` yang kamu kirim), itu tidak masalah untuk penggunaan umum, tapi tetap set **Gradle JDK = 17** agar Gradle Sync/build kompatibel.
 - Android SDK:
   - Compile/Target SDK: 34
   - Min SDK: 26
@@ -175,7 +177,8 @@ Catatan:
 ## Troubleshooting
 
 - Gradle Sync gagal:
-  - Pastikan Android Studio menggunakan JDK 17.
+  - Pastikan Android Studio memakai **Gradle JDK 17**: Android Studio → Settings/Preferences → Build, Execution, Deployment → Build Tools → Gradle → Gradle JDK.
+  - Jika Java sistem kamu JDK 25, jangan dipakai sebagai Gradle JDK untuk project ini.
   - Pastikan koneksi internet tersedia untuk download dependency pertama kali.
   - Coba **File → Invalidate Caches / Restart**.
 - Database seed tidak muncul:

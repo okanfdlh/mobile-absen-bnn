@@ -25,4 +25,7 @@ interface DivisionDao {
 
     @Query("SELECT * FROM divisions WHERE id = :id LIMIT 1")
     suspend fun findById(id: Long): DivisionEntity?
+
+    @Query("DELETE FROM divisions WHERE id = :id")
+    suspend fun deleteById(id: Long)
 }

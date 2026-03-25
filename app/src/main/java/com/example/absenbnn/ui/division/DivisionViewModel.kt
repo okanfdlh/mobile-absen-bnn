@@ -3,6 +3,7 @@ package com.example.absenbnn.ui.division
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.absenbnn.domain.model.Division
+import com.example.absenbnn.domain.usecase.DeleteDivisionUseCase
 import com.example.absenbnn.domain.usecase.ObserveDivisionsUseCase
 import com.example.absenbnn.domain.usecase.UpsertDivisionUseCase
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 class DivisionViewModel(
     observeDivisionsUseCase: ObserveDivisionsUseCase,
     private val upsertDivisionUseCase: UpsertDivisionUseCase,
+    private val deleteDivisionUseCase: DeleteDivisionUseCase,
 ) : ViewModel() {
     val divisions: StateFlow<List<Division>> = observeDivisionsUseCase.all().stateIn(
         scope = viewModelScope,
@@ -26,5 +28,11 @@ class DivisionViewModel(
             onResult(result)
         }
     }
-}
 
+    fun delete(id: Long, onResult: (Result<Unit>) -> Unit) {
+        viewModelScope.launch {
+            val result = deleteDivisionUseCase.execute(id)
+            onResult(result)
+        }
+    }
+}

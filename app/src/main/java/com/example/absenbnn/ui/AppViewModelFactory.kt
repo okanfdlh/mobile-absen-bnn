@@ -3,6 +3,8 @@ package com.example.absenbnn.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.absenbnn.ServiceLocator
+import com.example.absenbnn.domain.usecase.DeleteAttendanceDailyUseCase
+import com.example.absenbnn.domain.usecase.DeleteDivisionUseCase
 import com.example.absenbnn.domain.usecase.GetAttendanceDailyUseCase
 import com.example.absenbnn.domain.usecase.GetDailyReportUseCase
 import com.example.absenbnn.domain.usecase.GetHistoryUseCase
@@ -47,6 +49,7 @@ object AppViewModelFactory : ViewModelProvider.Factory {
                         ServiceLocator.attendanceRepository,
                         validateAttendance,
                     ),
+                    deleteAttendanceDailyUseCase = DeleteAttendanceDailyUseCase(ServiceLocator.attendanceRepository),
                 ) as T
 
             modelClass.isAssignableFrom(DailyReportViewModel::class.java) ->
@@ -62,10 +65,13 @@ object AppViewModelFactory : ViewModelProvider.Factory {
                 HistoryViewModel(GetHistoryUseCase(ServiceLocator.reportRepository)) as T
 
             modelClass.isAssignableFrom(DivisionViewModel::class.java) ->
-                DivisionViewModel(observeDivisions, UpsertDivisionUseCase(ServiceLocator.divisionRepository)) as T
+                DivisionViewModel(
+                    observeDivisions,
+                    UpsertDivisionUseCase(ServiceLocator.divisionRepository),
+                    DeleteDivisionUseCase(ServiceLocator.divisionRepository),
+                ) as T
 
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
         }
     }
 }
-

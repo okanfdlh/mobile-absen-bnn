@@ -33,6 +33,10 @@ class DivisionRepository(
         divisionDao.upsert(entity)
     }
 
+    suspend fun delete(id: Long) {
+        divisionDao.deleteById(id)
+    }
+
     private fun DivisionEntity.toDomain(): Division {
         return Division(id = id, code = code, name = name, isActive = isActive)
     }
